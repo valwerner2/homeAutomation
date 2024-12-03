@@ -1,9 +1,15 @@
 #include <Arduino.h>
 
-void setup() {
-// write your initialization code here
+#define  LED 2
+void setup()
+{
+    pinMode(LED, OUTPUT);
 }
 
-void loop() {
-// write your code here
+void loop()
+{
+    digitalWrite(LED, HIGH);
+    delay(1000);
+    digitalWrite(LED, LOW);
+    delay(1000);
 }
