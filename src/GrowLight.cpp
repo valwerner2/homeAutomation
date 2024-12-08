@@ -23,6 +23,13 @@ namespace PlantServer
         else
         {
             this->pwm.setValue(map(brightness, 0, 100, 255, 0));
+            this->relay.setValue(HIGH);
         }
+        this->brightness = brightness;
     }
+    uint8_t GrowLight::getBrightness()
+    {
+        return this->brightness;
+    }
+
 }

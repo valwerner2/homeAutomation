@@ -18,6 +18,7 @@ namespace PlantServer
     public:
         GrowLight(uint8_t pinPwm, uint8_t pinRelay, uint8_t brightness = 0);
         void setBrightness(uint8_t brightness);
+        uint8_t getBrightness();
     };
 }
 

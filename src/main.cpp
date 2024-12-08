@@ -1,22 +1,13 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
 
 #include "wifiPassword.h"
-#include "html.h"
+#include "globals.h"
 
 #define MYTZ "CET-1CEST-2,M3.5.0,M10.5.0/3"
 
 
 struct tm tInfo;
-typedef struct structGrowLight
-{
-    int turnOnTime;
-    int turnOffTime;
-    int maxBrightness;
-    int dimTime;
-}growLight;
 
 int getIntTime();
 char minutePassed();
@@ -24,6 +15,8 @@ char secondPassed();
 void initWifi();
 void updateTime(const uint32_t timeout);
 void initTime();
+void initServer();
+
 
 void printTime()
 {
@@ -36,6 +29,7 @@ void setup()
 {
     Serial.begin(115200);
     initWifi();
+    initServer();
     initTime();
 }
 
@@ -77,6 +71,37 @@ char secondPassed()
     }
     return 0;
 }
+
+void initServer()
+{
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        auto callback = [](const String& var)
+        {
+            if(var == "SLIDERGROWLIGHT1VALUE")
+            {
+                return String(growLight1.getBrightness());
+            }
+            return String();
+        };
+        request->send_P(200, "text/html", index_html, callback);
+    });
+
+    server.on("/growLight1Brightness", HTTP_GET, [] (AsyncWebServerRequest *request) {
+        String inputMessage;
+        if (request->hasParam(PARAM_INPUT)) {
+            inputMessage = request->getParam(PARAM_INPUT)->value();
+            growLight1.setBrightness((uint8_t)inputMessage.toInt());
+        }
+        else {
+            inputMessage = "No message sent";
+        }
+        Serial.println(inputMessage);
+        request->send(200, "text/plain", "OK");
+    });
+
+    server.begin();
+}
+
 void initWifi()
 {
     Serial.print("Connecting to WiFi");

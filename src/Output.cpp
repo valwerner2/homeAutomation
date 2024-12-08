@@ -5,6 +5,7 @@
 #include "Output.h"
 namespace PlantServer
 {
+    Output::Output(){}
     Output::Output(uint8_t pin, uint8_t outputMode, uint32_t value)
     {
         this->pin = pin;
