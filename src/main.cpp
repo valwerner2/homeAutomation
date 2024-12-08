@@ -1,7 +1,10 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "wifiPassword.h"
+#include "html.h"
 
 #define MYTZ "CET-1CEST-2,M3.5.0,M10.5.0/3"
 
