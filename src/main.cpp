@@ -112,6 +112,7 @@ void initWifi()
         Serial.print(".");
     }
     Serial.println(" Connected!");
+    Serial.println(WiFi.localIP());
 }
 void initTime()
 {
