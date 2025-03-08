@@ -18,6 +18,7 @@ namespace PlantServer
 
         if(!brightness)
         {
+            this->pwm.setValue(255);
             this->relay.setValue(LOW);
         }
         else
