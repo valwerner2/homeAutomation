@@ -19,12 +19,12 @@ namespace PlantServer
         if(!brightness)
         {
             this->pwm.setValue(255);
-            this->relay.setValue(LOW);
+            this->relay.setValue(HIGH);
         }
         else
         {
             this->pwm.setValue(map(brightness, 0, 100, 255, 0));
-            this->relay.setValue(HIGH);
+            this->relay.setValue(LOW);
         }
         this->brightness = brightness;
     }
