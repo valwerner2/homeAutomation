@@ -9,7 +9,7 @@
 
 struct tm tInfo;
 
-int getIntTime();
+uint16_t getIntTime();
 char minutePassed();
 char secondPassed();
 void initWifi();
@@ -42,7 +42,7 @@ void loop()
     }
 }
 
-int getIntTime()
+uint16_t getIntTime()
 {
     char buffer[5];
     sprintf(buffer, "%2d%2d", tInfo.tm_hour, tInfo.tm_min);
