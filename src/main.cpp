@@ -80,7 +80,7 @@ void loop()
 uint16_t getIntTime()
 {
     char buffer[5];
-    sprintf(buffer, "%2d%2d", tInfo.tm_hour, tInfo.tm_min);
+    sprintf(buffer, "%2d%02d", tInfo.tm_hour, tInfo.tm_min);
     return atoi(buffer);
 }
 char minutePassed()
