@@ -15,19 +15,29 @@ void initWifi();
 void updateTime(const uint32_t timeout);
 void initTime();
 void initServer();
-
+void initScreen(void);
 
 void printTime()
 {
     char str[30];
     strftime(str, sizeof(str), "%T", &tInfo);
     Serial.printf("%s %d\n", str, getIntTime());
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.println(WiFi.localIP());
+    display.printf("%s %d\n", str, getIntTime());
+    display.printf("Top: %d\%\nBottom: %d\%\n", growLightTop.getBrightness(), growLightBottom.getBrightness());
+    display.display();
 }
 
 void setup()
 {
     Serial.begin(115200);
     delay(5000);
+    initScreen();
     initWifi();
     initServer();
     initTime();
@@ -106,17 +116,52 @@ void initWifi()
 {
     Serial.print("Connecting to WiFi");
     WiFi.begin(ssid, password);
+    char connectAnimationBuffer[] = "|/-\\";
     while (WiFi.status() != WL_CONNECTED) {
-        delay(100);
-        Serial.print(".");
+        for (int i = 0; i < strlen(connectAnimationBuffer); i++)
+        {
+            display.clearDisplay();
+            display.setTextSize(4);
+            display.setTextColor(SSD1306_WHITE);
+            display.setCursor(0, 0);
+            display.print(connectAnimationBuffer[i]);
+            display.display();
+            Serial.print(connectAnimationBuffer[i]);
+            delay(100);
+        }
     }
     Serial.println(" Connected!");
     Serial.println(WiFi.localIP());
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(0, 0);
+    display.print(WiFi.localIP());
+    display.display();
 }
 void initTime()
 {
     configTzTime(MYTZ, "time.google.com", "time.windows.com", "pool.ntp.org");
     updateTime(5000);
+}
+void initScreen(void)
+{
+    Serial.println("Screen init start");
+
+    Wire.begin(I2C_SDA, I2C_SCL);
+    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+    if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for(;;); // Don't proceed, loop forever
+    }
+
+    display.clearDisplay();
+    display.drawPixel(10, 10, SSD1306_WHITE);
+    display.display();
+
+    Serial.println("Screen init done");
+    delay(2000);
 }
 void updateTime(const uint32_t timeout) {
     uint32_t start = millis();

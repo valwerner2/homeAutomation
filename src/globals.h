@@ -12,7 +12,13 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-#include "GrowLight.h"
+
+#ifndef ESP32_PLANTSERVER_HTML_H
+#define ESP32_PLANTSERVER_HTML_H
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
 AsyncWebServer server(80);
 const char* PARAM_INPUT = "value";
@@ -21,7 +27,10 @@ PlantServer::GrowLight growLightBottom(7, 2);
 PlantServer::Output PowerBarRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
 PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
 
-PlantServer::GrowLight growLight1(4, 15);
+#define I2C_SDA 8  // Adjust to your board's wiring
+#define I2C_SCL 9
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
 const char index_html[] PROGMEM = R"rawliteral(
