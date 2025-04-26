@@ -29,7 +29,7 @@ void printTime()
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
     display.setCursor(0, 0);
-    display.println(WiFi.localIP());
+    display.printf("%s - %d\n", WiFi.localIP().toString(), WiFi.status());
     display.printf("%s %d\n", str, getIntTime());
     display.printf("Top: %d\%\nBottom: %d\%\n", growLightTop.getBrightness(), growLightBottom.getBrightness());
     display.display();
