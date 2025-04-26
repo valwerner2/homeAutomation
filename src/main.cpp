@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include <WiFi.h>
+#include "globals.h"
 
 #include "wifiPassword.h"
 #include "globals.h"

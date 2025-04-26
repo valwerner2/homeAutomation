@@ -2,10 +2,13 @@
 // Created by valwe on 08/12/2024.
 //
 
-#ifndef ESP32_PLANTSERVER_HTML_H
-#define ESP32_PLANTSERVER_HTML_H
+#include "GrowLight.h"
 
 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
@@ -13,6 +16,10 @@
 
 AsyncWebServer server(80);
 const char* PARAM_INPUT = "value";
+PlantServer::GrowLight growLightTop(6, 1);
+PlantServer::GrowLight growLightBottom(7, 2);
+PlantServer::Output PowerBarRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
 
 PlantServer::GrowLight growLight1(4, 15);
 
