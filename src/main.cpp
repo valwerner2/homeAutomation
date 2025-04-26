@@ -58,6 +58,22 @@ void loop()
     if(secondPassed())
     {
         printTime();
+        if(getIntTime() >= 2359 || getIntTime() < 600)
+        {
+            growLightTop.setBrightness(0);
+            growLightBottom.setBrightness(0);
+        }
+        else if(getIntTime() >= 600)
+        {
+            preferences.begin("growLightTop", true); // "true" means read-only mode
+            growLightTop.setBrightness(preferences.getUInt("brightness", 100));
+            preferences.end();
+
+            preferences.begin("growLightBottom", true); // "true" means read-only mode
+            growLightBottom.setBrightness(preferences.getUInt("brightness", 100));
+            preferences.end();
+        }
+
     }
 }
 
