@@ -1,10 +1,12 @@
 #include "globals.h"
 
 #include "wifiPassword.h"
-#include "globals.h"
+
+#include <Preferences.h>
 
 #define MYTZ "CET-1CEST-2,M3.5.0,M10.5.0/3"
 
+Preferences preferences;
 
 struct tm tInfo;
 
@@ -41,6 +43,14 @@ void setup()
     initWifi();
     initServer();
     initTime();
+
+    preferences.begin("growLightTop", true); // "true" means read-only mode
+    growLightTop.setBrightness(preferences.getUInt("brightness", 100));
+    preferences.end();
+
+    preferences.begin("growLightBottom", true); // "true" means read-only mode
+    growLightBottom.setBrightness(preferences.getUInt("brightness", 100));
+    preferences.end();
 }
 
 void loop()
@@ -89,7 +99,10 @@ void initServer()
         {
             if(var == "SLIDERGROWLIGHT1VALUE")
             {
-                return String(growLight1.getBrightness());
+                preferences.begin("growLightTop", true); // "true" means read-only mode
+                uint8_t temp = preferences.getUInt("brightness", 100);
+                preferences.end();
+                return String(temp);
             }
             return String();
         };
@@ -100,7 +113,16 @@ void initServer()
         String inputMessage;
         if (request->hasParam(PARAM_INPUT)) {
             inputMessage = request->getParam(PARAM_INPUT)->value();
-            growLight1.setBrightness((uint8_t)inputMessage.toInt());
+            growLightBottom.setBrightness((uint8_t)inputMessage.toInt());
+            growLightTop.setBrightness((uint8_t)inputMessage.toInt());
+
+            preferences.begin("growLightTop", false); // "false" means read+write mode
+            preferences.putUInt("brightness", (uint8_t)inputMessage.toInt()); // Store a uint value (0-255)
+            preferences.end(); // Always end to free up the flash system
+
+            preferences.begin("growLightBottom", false); // "false" means read+write mode
+            preferences.putUInt("brightness", (uint8_t)inputMessage.toInt()); // Store a uint value (0-255)
+            preferences.end(); // Always end to free up the flash system
         }
         else {
             inputMessage = "No message sent";
