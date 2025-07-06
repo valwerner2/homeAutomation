@@ -2,8 +2,8 @@
 // Created by valwe on 26/04/2025.
 //
 
-#ifndef ESP32_PLANTSERVER_SERVERVIEW_H
-#define ESP32_PLANTSERVER_SERVERVIEW_H
+#ifndef ESP32_PLANTSERVER_HTTPSERVER_H
+#define ESP32_PLANTSERVER_HTTPSERVER_H
 
 #pragma once
 
@@ -11,20 +11,18 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-#include "indexHtml.h"
-
 namespace PlantServer
 {
 
-    class ServerView
+    class httpServer
     {
     private:
         AsyncWebServer server;
     public:
-        ServerView();
+        httpServer();
         void start();
     };
 
 } // PlantServer
 
-#endif //ESP32_PLANTSERVER_SERVERVIEW_H
+#endif //ESP32_PLANTSERVER_HTTPSERVER_H
