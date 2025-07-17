@@ -1,6 +1,7 @@
 #include "wifiPassword.h"
 #include "GrowLight.h"
-#include "httpServer.h"
+#include "HttpServer.h"
+#include "DeviceBroadcaster.h"
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>

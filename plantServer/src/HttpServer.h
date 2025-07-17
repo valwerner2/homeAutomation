@@ -14,12 +14,12 @@
 namespace PlantServer
 {
 
-    class httpServer
+    class HttpServer
     {
     private:
         AsyncWebServer server;
     public:
-        httpServer();
+        HttpServer();
         void start();
     };
 

@@ -2,7 +2,7 @@
 // Created by valwe on 26/04/2025.
 //
 
-#include "httpServer.h"
+#include "HttpServer.h"
 
 const char* PARAM_INPUT = "value";
 
