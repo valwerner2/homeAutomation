@@ -1,13 +1,10 @@
 package org.deviceListener;
 
-/**
- * Hello world!
- *
- */
+
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        new Thread(new DeviceListener()).start();
     }
 }
