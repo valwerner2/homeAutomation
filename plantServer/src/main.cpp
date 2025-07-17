@@ -46,14 +46,14 @@ void printTime()
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
     display.setCursor(0, 0);
-    display.printf("%s - %d\n", WiFi.localIP().toString(), WiFi.status());
+    display.printf("%s - %d\n", WiFi.localIP().toString().c_str(), WiFi.status());
     display.printf("%s %d\n", str, getIntTime());
     //display.printf("Top: %d\%\nBottom: %d\%\n", growLightTop.getBrightness(), growLightBottom.getBrightness());
     display.display();
 }
 
-PlantServer::httpServer server;
-
+PlantServer::HttpServer server;
+IOT::DeviceBroadcaster broadcaster("plantServer");
 
 void setup()
 {
@@ -62,6 +62,7 @@ void setup()
     initScreen();
     initWifi();
     initTime();
+    broadcaster.setup();
 
     server.start();
 }
@@ -72,6 +73,7 @@ void loop()
     {
         printTime();
     }
+    broadcaster.sendBroadcast(5000);
 }
 
 uint16_t getIntTime()
