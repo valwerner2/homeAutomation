@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bc5aa0c6-d5e1-4b25-a34b-cdd18663fc9e" name="RPi">
+        <fileTransfer rootFolder="/home/valwe" accessType="SFTP" host="192.168.2.155" port="22" sshConfigId="4b5e161a-85a3-4795-b156-94e3506057be" sshConfig="valwe@192.168.2.155:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
