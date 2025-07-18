@@ -16,6 +16,7 @@ namespace IOT
     private:
         unsigned long lastBroadcast_ = 0;
         const char* broadcastIp_ = "255.255.255.255";
+        char macAddr[18] = {0};
         const int udpPort_ = 4210;
         WiFiUDP udp_;
         String purpose_;

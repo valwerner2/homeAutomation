@@ -3,7 +3,7 @@
 //
 
 #include "DeviceBroadcaster.h"
-
+#include <esp_wifi.h>
 
 namespace IOT
 {
@@ -16,6 +16,16 @@ namespace IOT
     {
         while (WiFi.status() != WL_CONNECTED) { delay(500);}
 
+        uint8_t baseMac[6];
+        esp_err_t ret = esp_wifi_get_mac(WIFI_IF_STA, baseMac);
+
+        if (ret == ESP_OK)
+        {
+            sniprintf(macAddr, 18,"%02X:%02X:%02X:%02X:%02X:%02X",
+                           baseMac[0], baseMac[1], baseMac[2],
+                           baseMac[3], baseMac[4], baseMac[5]);
+        }
+
         udp_.begin(udpPort_);
     }
 
@@ -24,7 +34,11 @@ namespace IOT
         //wifi not connected
         if (WiFi.status() != WL_CONNECTED) {return;}
 
-        String message = "{\"ip\": \"" + WiFi.localIP().toString() + "\", \"purpose\": \""+ purpose_ +"\"}";
+        String message = "{";
+        message += "\"ip\": \"" + WiFi.localIP().toString() + "\", ";
+        message += "\"mac\": \""+ String(macAddr) +"\", ";
+        message += "\"purpose\": \""+ purpose_ +"\"";
+        message += "}";
         udp_.beginPacket(broadcastIp_, udpPort_);
         udp_.write((const uint8_t*)message.c_str(), message.length());
         udp_.endPacket();
