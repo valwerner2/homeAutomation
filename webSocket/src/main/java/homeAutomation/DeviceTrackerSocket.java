@@ -24,6 +24,8 @@ public class DeviceTrackerSocket {
     List<Session> sessions = new CopyOnWriteArrayList<>();
     Map<String, Device> devices = new ConcurrentHashMap<>();
     Gson gson = new Gson();
+    Thread threadTimeTracker = new Thread(new DeviceTimeTracker(devices));
+    boolean threadTimeTrackerStarted = false;
 
     @OnOpen
     public void onOpen(Session session)
@@ -50,10 +52,15 @@ public class DeviceTrackerSocket {
     @OnMessage
     public void onMessage(String message)
     {
-        System.out.print("onMessage>");
+        if(!threadTimeTrackerStarted)
+        {
+            threadTimeTrackerStarted = true;
+            threadTimeTracker.start();
+        }
 
-        Device device = gson.fromJson(message, Device.class);
+        Device newDevice = gson.fromJson(message, Device.class);
 
-        System.out.print(device + "\n");
+        devices.put(newDevice.mac, newDevice);
+        new DeviceTimeTracker(devices).checkDevices();
     }
 }
