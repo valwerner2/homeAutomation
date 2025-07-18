@@ -61,6 +61,5 @@ public class DeviceTrackerSocket {
         Device newDevice = gson.fromJson(message, Device.class);
 
         devices.put(newDevice.mac, newDevice);
-        new DeviceTimeTracker(devices).checkDevices();
     }
 }
