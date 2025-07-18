@@ -1,13 +1,13 @@
 package org.deviceListener;
 
-/**
- * Hello world!
- *
- */
+
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        String wsUri = "ws://127.0.0.1:8080/homeAutomation/ws/deviceTracker";
+
+        DeviceListenerClient.connect(wsUri);
+        new Thread(new DeviceListenerUdpServer()).start();
     }
 }
