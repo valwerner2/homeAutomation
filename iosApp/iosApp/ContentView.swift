@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  homeAutomation
+//  iosApp
 //
 //  Created by Valentin Werner on 21.07.25.
 //
