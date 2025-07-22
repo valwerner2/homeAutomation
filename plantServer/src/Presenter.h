@@ -5,7 +5,7 @@
 #ifndef ESP32_PLANTSERVER_PRESENTER_H
 #define ESP32_PLANTSERVER_PRESENTER_H
 
-#include "httpServer.h"
+#include "HttpServer.h"
 
 namespace PlantServer
 {
@@ -13,7 +13,7 @@ namespace PlantServer
     class Presenter
     {
     private:
-        httpServer serverView;
+        HttpServer serverView;
     public:
         Presenter();
         void start();

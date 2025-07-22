@@ -2,18 +2,18 @@
 // Created by valwe on 26/04/2025.
 //
 
-#include "httpServer.h"
+#include "HttpServer.h"
 
 const char* PARAM_INPUT = "value";
 
 namespace PlantServer
 {
-    httpServer::httpServer() : server(80) {
+    HttpServer::HttpServer() : server(80) {
 
     }
 
 // Start the server
-    void httpServer::start()
+    void HttpServer::start()
     {
         server.on("/growLight1Brightness", HTTP_GET, [] (AsyncWebServerRequest *request) {
             String inputMessage;
