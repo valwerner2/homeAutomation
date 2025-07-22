@@ -3,10 +3,14 @@ package org.deviceListener;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class DeviceListenerUdpServer implements Runnable {
+public class UdpServerDeviceListener implements Runnable {
     private final int port = 4210;
+    ClientDeviceListener deviceSocket;
 
-    public DeviceListenerUdpServer() {}
+    public UdpServerDeviceListener(ClientDeviceListener deviceSocke)
+    {
+        this.deviceSocket = deviceSocke;
+    }
 
     @Override
     public void run() {
@@ -19,8 +23,8 @@ public class DeviceListenerUdpServer implements Runnable {
                 socket.receive(packet);
 
                 String message = new String(packet.getData(), 0, packet.getLength());
-                System.out.println(message);
-                DeviceListenerClient.send(message);
+                System.out.println("UPD-Paket: " + message);
+                deviceSocket.send(message);
             }
 
         } catch (Exception e) {
