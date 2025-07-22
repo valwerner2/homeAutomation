@@ -5,9 +5,16 @@ public class App
 {
     public static void main( String[] args )
     {
-        String wsUri = "ws://127.0.0.1:8080/homeAutomation/ws/deviceTracker";
+        DeviceData deviceData = new DeviceData();
 
-        DeviceListenerClient.connect(wsUri);
-        new Thread(new DeviceListenerUdpServer()).start();
+        String deviceSocketUri = "ws://127.0.0.1:8080/homeAutomation/ws/deviceTracker";
+        ClientDeviceListener deviceSocket = new ClientDeviceListener(deviceSocketUri, deviceData);
+        deviceSocket.connect();
+        new Thread(new UdpServerDeviceListener(deviceSocket)).start();
+
+        String automationSockerUri = "ws://127.0.0.1:8080/homeAutomation/ws/automationService";
+        ClientAutomation automationSocket = new ClientAutomation(automationSockerUri, deviceData);
+        automationSocket.connect();
+
     }
 }
