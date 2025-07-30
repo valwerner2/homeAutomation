@@ -19,8 +19,32 @@ namespace IOT
         name_ = "";
     }
 
-    void DeviceBroadcaster::setup()
+    void DeviceBroadcaster::loadName()
     {
+        // read-mode
+        preferences_.begin("device", true);
+        name_ = preferences_.getString("name", ""); // fallback: empty
+        preferences_.end();
+    }
+
+    void DeviceBroadcaster::storeName()
+    {
+        // write mode
+        preferences_.begin("device", false);
+        preferences_.putString("name", name_);
+        preferences_.end();
+    }
+
+    void DeviceBroadcaster::setName(String name)
+    {
+        name_ = name;
+        storeName();
+    }
+
+    void DeviceBroadcaster::setup(AsyncWebServer& server)
+    {
+        name_ == "" ? loadName() : storeName();
+
         while (WiFi.status() != WL_CONNECTED) { delay(500);}
 
         uint8_t baseMac[6];
@@ -34,11 +58,23 @@ namespace IOT
 
             if(name_ == "")
             {
-                name_ = String(macAddr_);
+                setName(macAddr_);
             }
         }
 
         udp_.begin(udpPort_);
+
+        server.on("/deviceBroadcaster/name", HTTP_PUT, [this] (AsyncWebServerRequest *request) {
+            if (!request->hasParam("name", true)) {
+                request->send(400, "application/json", "{\"error\":\"Missing 'name' parameter\"}");
+                return;
+            }
+
+            String newName = request->getParam("name", true)->value();
+            Serial.println(newName);
+            this->setName(newName);
+            request->send(200, "application/json", "{\"status\":\"Name updated\"}");
+        });
     }
 
     void DeviceBroadcaster::sendBroadcast()

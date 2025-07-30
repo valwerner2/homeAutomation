@@ -5,7 +5,11 @@
 #ifndef PLANTSERVER_BROADCASTDEVICE_H
 #define PLANTSERVER_BROADCASTDEVICE_H
 
+#include <Arduino.h>
 #include <string>
+#include <Preferences.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "WiFi.h"
 
@@ -21,13 +25,18 @@ namespace IOT
         String name_;
         WiFiUDP udp_;
         String purpose_;
+        Preferences preferences_;
 
     public:
         DeviceBroadcaster(String purpose, String name);
         DeviceBroadcaster(String purpose);
-        void setup();
+        void setup(AsyncWebServer& server);
         void sendBroadcast();
         void sendBroadcast(const unsigned long msInterval);
+        void setName(String name);
+    private:
+        void loadName();
+        void storeName();
     };
 }
 

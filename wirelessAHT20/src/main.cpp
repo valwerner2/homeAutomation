@@ -38,7 +38,7 @@ void setup() {
     Serial.println(" Connected!");
     Serial.println(WiFi.localIP());
 
-    broadcaster.setup();
+    broadcaster.setup(server);
     serverSetup();
 }
 
