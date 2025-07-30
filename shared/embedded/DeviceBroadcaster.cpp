@@ -7,9 +7,15 @@
 
 namespace IOT
 {
+    DeviceBroadcaster::DeviceBroadcaster(String purpose, String name)
+    {
+        purpose_ = purpose;
+        name_ = name;
+    }
     DeviceBroadcaster::DeviceBroadcaster(String purpose)
     {
         purpose_ = purpose;
+        name_ = "";
     }
 
     void DeviceBroadcaster::setup()
@@ -21,9 +27,14 @@ namespace IOT
 
         if (ret == ESP_OK)
         {
-            sniprintf(macAddr, 18,"%02X:%02X:%02X:%02X:%02X:%02X",
+            sniprintf(macAddr_, 18,"%02X:%02X:%02X:%02X:%02X:%02X",
                            baseMac[0], baseMac[1], baseMac[2],
                            baseMac[3], baseMac[4], baseMac[5]);
+
+            if(name_ == "")
+            {
+                name_ = String(macAddr_);
+            }
         }
 
         udp_.begin(udpPort_);
@@ -36,8 +47,9 @@ namespace IOT
 
         String message = "{";
         message += "\"ip\": \"" + WiFi.localIP().toString() + "\", ";
-        message += "\"mac\": \""+ String(macAddr) +"\", ";
+        message += "\"mac\": \""+ String(macAddr_) +"\", ";
         message += "\"purpose\": \""+ purpose_ +"\"";
+        message += "\"name\": \""+ String(name_) +"\"";
         message += "}";
         udp_.beginPacket(broadcastIp_, udpPort_);
         udp_.write((const uint8_t*)message.c_str(), message.length());
@@ -49,6 +61,7 @@ namespace IOT
         unsigned long now = millis();
         if (now - lastBroadcast_ >= msInterval)
         {
+            Serial.println("broadcasting");
             lastBroadcast_ = now;
             sendBroadcast();
         }
