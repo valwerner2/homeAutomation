@@ -48,24 +48,20 @@ public class EndpointAutomationService
     public void onMessage(String message)
     {
         AutomationInfo automationInfo = gson.fromJson(message, AutomationInfo.class);
-        switch(automationInfo.type)
+
+        String key = automationInfo.type + automationInfo.macSensor + automationInfo.sensorEndpoint + automationInfo.macSlave + automationInfo.slaveEndpoint;
+        if(automationInfo.command.equals("delete"))
         {
-            case "ath20":
-                if(automationInfo.command.equals("delete"))
-                {
-                    automations.remove(automationInfo.macSensor + automationInfo.macSlave + automationInfo.slaveEndpoint);
-                }
-                else
-                {
-                    automations.put(automationInfo.macSensor + automationInfo.macSlave + automationInfo.slaveEndpoint,
-                            automationInfo);
-                }
-                break;
-            default:
-                break;
+            automations.remove(key);
         }
+        else
+        {
+            automations.put(key,  automationInfo);
+        }
+
         broadcastAutomations();
     }
+
     public void broadcastAutomations()
     {
         broadcast(gson.toJson(new ArrayList<>(automations.values())));

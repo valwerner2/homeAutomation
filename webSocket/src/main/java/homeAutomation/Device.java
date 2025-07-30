@@ -7,6 +7,7 @@ public class Device
     public String ip;
     public String mac;
     public String purpose;
+    public String name;
     public long timeStamp;
     public boolean active = false;
 
@@ -21,6 +22,6 @@ public class Device
     @Override
     public String toString()
     {
-        return "[ip=" + ip + ", mac=" + mac + ", purpose=" + purpose  + ", timeStamp=" + timeStamp + ", active=" + active + "]";
+        return "[name=" + name + ", ip=" + ip + ", mac=" + mac + ", purpose=" + purpose  + ", timeStamp=" + timeStamp + ", active=" + active + "]";
     }
 }
