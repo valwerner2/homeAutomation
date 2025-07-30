@@ -45,7 +45,6 @@ void setup() {
 void loop() {
     reconnectWifi(5000);
     broadcaster.sendBroadcast(5000);
-    delay(500);
 }
 
 void serverSetup()
@@ -53,7 +52,9 @@ void serverSetup()
     server.on("/", HTTP_GET, [] (AsyncWebServerRequest *request) {
         JsonDocument responseJson;
         sensors_event_t humidity, temp;
-        aht.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
+
+        // load temp and humidity
+        aht.getEvent(&humidity, &temp);
 
         responseJson["temperature"] = temp.temperature;
         responseJson["humidity"] = humidity.relative_humidity;
