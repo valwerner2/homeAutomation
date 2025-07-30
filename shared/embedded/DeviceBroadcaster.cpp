@@ -4,6 +4,7 @@
 
 #include "DeviceBroadcaster.h"
 #include <esp_wifi.h>
+#include <ArduinoJson.h>
 
 namespace IOT
 {
@@ -44,15 +45,19 @@ namespace IOT
     {
         //wifi not connected
         if (WiFi.status() != WL_CONNECTED) {return;}
+        JsonDocument message;
 
-        String message = "{";
-        message += "\"ip\": \"" + WiFi.localIP().toString() + "\", ";
-        message += "\"mac\": \""+ String(macAddr_) +"\", ";
-        message += "\"purpose\": \""+ purpose_ +"\"";
-        message += "\"name\": \""+ String(name_) +"\"";
-        message += "}";
+
+        message["ip"] = WiFi.localIP().toString();
+        message["mac"] = String(macAddr_);
+        message["purpose"] = purpose_;
+        message["name"] = name_;
+
+        String jsonString;
+        serializeJson(message, jsonString);
+
         udp_.beginPacket(broadcastIp_, udpPort_);
-        udp_.write((const uint8_t*)message.c_str(), message.length());
+        udp_.write((const uint8_t*)jsonString.c_str(), jsonString.length());
         udp_.endPacket();
     }
 
