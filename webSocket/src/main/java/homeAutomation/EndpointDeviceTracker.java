@@ -16,6 +16,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @ServerEndpoint("/homeAutomation/ws/deviceTracker")
@@ -63,7 +64,10 @@ public class EndpointDeviceTracker {
         //keep old active state
         if(!isNewDevice) { receivedDevice.active = deviceStorage.getDevices().get(receivedDevice.mac).active; }
 
-        deviceStorage.getDevices().put(receivedDevice.mac, receivedDevice);
+        // check for changed name
+        if(!isNewDevice) {isNewDevice = !Objects.equals(deviceStorage.getDevices().get(receivedDevice.mac).name, receivedDevice.name);}
+
+            deviceStorage.getDevices().put(receivedDevice.mac, receivedDevice);
 
         //tell everyone about the new device
         if(isNewDevice) { broadcastDevices(); }
