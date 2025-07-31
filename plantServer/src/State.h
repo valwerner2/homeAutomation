@@ -16,22 +16,21 @@ namespace PlantServer
         const int opModeSlave = 0, opModeServerSlave = 1, opModeTimeBased = 2;
     private:
         int opModeGrowLightTop_;
-        int opModeGrowLightBottom_;
-        int opModeOutletLeft_;
-        int opModeOutletRight_;
-
         int brightnessGrowLightTop_;
         int onTimeGrowLightTop_;
         int offTimeGrowLightTop_;
 
+        int opModeGrowLightBottom_;
         int brightnessGrowLightBottom_;
         int onTimeGrowLightBottom_;
         int offTimeGrowLightBottom_;
 
+        int opModeOutletLeft_;
         int onOutletLeft_;
         int onTimeOutletLeft_;
         int offTimeOutletLeft_;
 
+        int opModeOutletRight_;
         int onOutletRight_;
         int onTimeOutletRight_;
         int offTimeOutletRight_;

@@ -6,10 +6,7 @@
 
 namespace PlantServer
 {
-    State::State()
-    {
-        readState();
-    }
+    State::State(){}
 
     void State::readState()
     {

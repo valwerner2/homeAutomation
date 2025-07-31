@@ -1,6 +1,7 @@
 #include "wifiPassword.h"
 #include "GrowLight.h"
 #include "DeviceBroadcaster.h"
+#include "State.h"
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -25,6 +26,7 @@ PlantServer::GrowLight growLightTop(6, 1);
 PlantServer::GrowLight growLightBottom(7, 2);
 PlantServer::Output PowerBarRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
 PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::State state;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -34,6 +36,8 @@ void initScreen(void);
 void initWifi();
 void initTime();
 void initServer();
+
+bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam);
 
 uint16_t getIntTime();
 void updateTime(const uint32_t timeout);
@@ -67,6 +71,7 @@ void setup()
     initWifi();
     initTime();
     broadcaster.setup(server);
+    state.readState();
 
     initServer();
 }
@@ -82,7 +87,116 @@ void loop()
 
 void initServer()
 {
+    server.on("/", HTTP_GET, [] (AsyncWebServerRequest *request) {
 
+        AsyncResponseStream *response = request->beginResponseStream("application/json");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+
+        response->print(state.toJsonString());
+
+        request->send(response);
+    });
+
+    server.on("/growLightTop", HTTP_PUT, [] (AsyncWebServerRequest *request) {
+        std::list<String> requiredParam = {"opModeGrowLightTop",
+                                           "brightnessGrowLightTop",
+                                           "onTimeGrowLightTop",
+                                           "offTimeGrowLightTop"};
+
+        if(isMissingParam(request, requiredParam)){return;}
+
+        String newName = request->getParam("name", true)->value();
+
+        state.setOpModeGrowLightTop(request->getParam("opModeGrowLightTop", true)->value().toInt());
+        state.setBrightnessGrowLightTop(request->getParam("brightnessGrowLightTop", true)->value().toInt());
+        state.setOnTimeGrowLightTop(request->getParam("onTimeGrowLightTop", true)->value().toInt());
+        state.setOffTimeGrowLightTop(request->getParam("offTimeGrowLightTop", true)->value().toInt());
+
+        request->send(200, "application/json", "{\"status\":\"growLightTop updated\"}");
+    });
+
+    server.on("/growLightBottom", HTTP_PUT, [] (AsyncWebServerRequest *request) {
+        std::list<String> requiredParam = {"opModeGrowLightBottom",
+                                           "brightnessGrowLightBottom",
+                                           "onTimeGrowLightBottom",
+                                           "offTimeGrowLightBottom"};
+
+        if(isMissingParam(request, requiredParam)){return;}
+
+        String newName = request->getParam("name", true)->value();
+
+        state.setOpModeGrowLightBottom(request->getParam("opModeGrowLightBottom", true)->value().toInt());
+        state.setBrightnessGrowLightBottom(request->getParam("brightnessGrowLightBottom", true)->value().toInt());
+        state.setOnTimeGrowLightBottom(request->getParam("onTimeGrowLightBottom", true)->value().toInt());
+        state.setOffTimeGrowLightBottom(request->getParam("offTimeGrowLightBottom", true)->value().toInt());
+
+        request->send(200, "application/json", "{\"status\":\"growLightBottom updated\"}");
+    });
+
+    server.on("/outletLeft", HTTP_PUT, [] (AsyncWebServerRequest *request) {
+        std::list<String> requiredParam = {"opModeOutletLeft",
+                                           "onOutletLeft",
+                                           "onTimeOutletLeft",
+                                           "offTimeOutletLeft"};
+
+        if(isMissingParam(request, requiredParam)){return;}
+
+        String newName = request->getParam("name", true)->value();
+
+        state.setOpModeOutletLeft(request->getParam("opModeOutletLeft", true)->value().toInt());
+        state.setOnOutletLeft(request->getParam("onOutletLeft", true)->value().toInt());
+        state.setOnTimeOutletLeft(request->getParam("onTimeOutletLeft", true)->value().toInt());
+        state.setOffTimeOutletLeft(request->getParam("offTimeOutletLeft", true)->value().toInt());
+
+        request->send(200, "application/json", "{\"status\":\"outletLeft updated\"}");
+    });
+
+    server.on("/outletRight", HTTP_PUT, [] (AsyncWebServerRequest *request) {
+        std::list<String> requiredParam = {"opModeOutletRight",
+                                           "onOutletRight",
+                                           "onTimeOutletRight",
+                                           "offTimeOutletRight"};
+
+        if(isMissingParam(request, requiredParam)){return;}
+
+        String newName = request->getParam("name", true)->value();
+
+        state.setOpModeOutletRight(request->getParam("opModeOutletRight", true)->value().toInt());
+        state.setOnOutletRight(request->getParam("onOutletRight", true)->value().toInt());
+        state.setOnTimeOutletRight(request->getParam("onTimeOutletRight", true)->value().toInt());
+        state.setOffTimeOutletRight(request->getParam("offTimeOutletRight", true)->value().toInt());
+
+        request->send(200, "application/json", "{\"status\":\"outletRight updated\"}");
+    });
+}
+
+bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam)
+{
+    bool missing = false;
+    std::list<String> missingParam = {};
+
+    for(auto param : requiredParam)
+    {
+        if (!request->hasParam(param, true))
+        {
+            missingParam.push_back(param);
+        }
+    }
+
+    missing = !missingParam.empty();
+    if(missing)
+    {
+
+        String stringMissingParam = "(";
+        for(auto param : missingParam)
+        {
+            stringMissingParam += param + ", ";
+        }
+        stringMissingParam += ")";
+        request->send(400, "application/json", "{\"error\":\"Missing parameters " +stringMissingParam+"\"}");
+    }
+
+    return missing;
 }
 
 uint16_t getIntTime()
