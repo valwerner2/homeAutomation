@@ -13,7 +13,7 @@ namespace PlantServer
     class State
     {
     public:
-        const int opModeSlave = 0, opModeServerSlave = 1, opModeTimeBased = 2;
+        static constexpr int opModeTimeBased = 0, opModeSlave  = 1, opModeServerSlaveOn = 2, opModeServerSlaveOff = 3;
     private:
         int opModeGrowLightTop_;
         int brightnessGrowLightTop_;

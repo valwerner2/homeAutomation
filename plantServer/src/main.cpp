@@ -2,6 +2,7 @@
 #include "GrowLight.h"
 #include "DeviceBroadcaster.h"
 #include "State.h"
+#include "wifiReconnect.h"
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -24,8 +25,8 @@ struct tm tInfo;
 
 PlantServer::GrowLight growLightTop(6, 1);
 PlantServer::GrowLight growLightBottom(7, 2);
-PlantServer::Output PowerBarRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
-PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::Output outletRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::Output outletLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
 PlantServer::State state;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -36,8 +37,11 @@ void initScreen(void);
 void initWifi();
 void initTime();
 void initServer();
+void updateGrowLights();
+void updateOutlets();
 
 bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam);
+bool isInOnTime(int onTime, int offTime);
 
 uint16_t getIntTime();
 void updateTime(const uint32_t timeout);
@@ -78,11 +82,60 @@ void setup()
 
 void loop()
 {
+    reconnectWifi(5000);
     if(secondPassed())
     {
         printTime();
     }
     broadcaster.sendBroadcast(5000);
+    updateGrowLights();
+    updateOutlets();
+}
+
+bool isInOnTime(int onTime, int offTime)
+{
+    int current = getIntTime();
+
+    if(onTime < offTime)
+    {
+        return onTime <= current  && current <= offTime;
+    }
+    if(onTime > offTime)
+    {
+      return  (onTime <= current  && current <= 2359) || (0000 <= current  && current <= offTime);
+    }
+    return false;
+}
+
+void updateGrowLights()
+{
+    //growLightTop
+}
+void updateOutlets()
+{
+    //left
+    bool outletLeftOn = false;
+    switch(state.getOpModeOutletLeft())
+    {
+        case state.opModeTimeBased:
+            outletLeftOn = isInOnTime(state.getOnTimeOutletLeft(), state.getOffTimeOutletLeft());
+            break;
+        case state.opModeSlave:
+
+            break;
+        default:
+            if(WiFi.status() == WL_CONNECTED)
+            {
+                outletLeftOn = state.getOnOutletLeft();
+            }
+            else
+            {
+                outletLeftOn = state.getOpModeOutletLeft() == state.opModeServerSlaveOn;
+            }
+            break;
+    }
+    if(outletLeftOn){ outletLeft.setValue(HIGH); }else{ outletLeft.setValue(LOW); }
+
 }
 
 void initServer()
@@ -168,6 +221,8 @@ void initServer()
 
         request->send(200, "application/json", "{\"status\":\"outletRight updated\"}");
     });
+
+    server.begin();
 }
 
 bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam)

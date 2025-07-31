@@ -69,9 +69,11 @@ namespace PlantServer
     JsonDocument State::toJson()
     {
         JsonDocument doc;
-        doc["opModeSlave"] = opModeSlave;
-        doc["opModeServerSlave"] = opModeServerSlave;
         doc["opModeTimeBased"] = opModeTimeBased;
+        doc["opModeSlave"] = opModeSlave;
+        doc["opModeServerSlaveOn"] = opModeServerSlaveOn;
+        doc["opModeServerSlaveOff"] = opModeServerSlaveOff;
+
 
         doc["opModeGrowLightTop"] = opModeGrowLightTop_;
         doc["opModeGrowLightBottom"] = opModeGrowLightBottom_;
