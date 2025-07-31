@@ -1,12 +1,13 @@
 #include "wifiPassword.h"
 #include "GrowLight.h"
-#include "HttpServer.h"
 #include "DeviceBroadcaster.h"
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #define MYTZ "CET-1CEST-2,M3.5.0,M10.5.0/3"
 
@@ -27,9 +28,12 @@ PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HI
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+AsyncWebServer server(80);
+
 void initScreen(void);
 void initWifi();
 void initTime();
+void initServer();
 
 uint16_t getIntTime();
 void updateTime(const uint32_t timeout);
@@ -52,7 +56,7 @@ void printTime()
     display.display();
 }
 
-PlantServer::HttpServer server;
+
 IOT::DeviceBroadcaster broadcaster("plantServer");
 
 void setup()
@@ -62,9 +66,9 @@ void setup()
     initScreen();
     initWifi();
     initTime();
-    broadcaster.setup();
+    broadcaster.setup(server);
 
-    server.start();
+    initServer();
 }
 
 void loop()
@@ -74,6 +78,11 @@ void loop()
         printTime();
     }
     broadcaster.sendBroadcast(5000);
+}
+
+void initServer()
+{
+
 }
 
 uint16_t getIntTime()
