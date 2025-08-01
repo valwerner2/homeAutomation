@@ -8,7 +8,7 @@ import Foundation
 
 class DevicesViewModel: ObservableObject {
     
-    @Published var groupedDevices: [String: [DeviceInfo]] = [:]
+    @Published var groupedDevices: [String: [DeviceModel]] = [:]
     @Published var editingDeviceID: UUID? = nil
     @Published var editedName: String = ""
     @Published var responseChangeName: String?
@@ -55,7 +55,7 @@ class DevicesViewModel: ObservableObject {
         print("processing message")
         
         do {
-            let devices = try JSONDecoder().decode([DeviceInfo].self, from: data)
+            let devices = try JSONDecoder().decode([DeviceModel].self, from: data)
             let grouped = Dictionary(grouping: devices, by: { $0.name })
 
             
@@ -71,7 +71,7 @@ class DevicesViewModel: ObservableObject {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
     }
     
-    private func findDevice(by id: UUID) -> DeviceInfo? {
+    private func findDevice(by id: UUID) -> DeviceModel? {
         return groupedDevices
             .flatMap { $0.value } // Flattens [[DeviceInfo]] into [DeviceInfo]
             .first { $0.id == id } // Finds the first match

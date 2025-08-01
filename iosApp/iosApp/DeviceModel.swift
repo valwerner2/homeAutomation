@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DeviceInfo: Identifiable, Decodable {
+struct DeviceModel: Identifiable, Decodable {
     let id = UUID()          // Needed for Identifiable
     let name: String
     let ip: String
