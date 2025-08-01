@@ -40,7 +40,7 @@ void initServer();
 void updateGrowLights();
 void updateOutlets();
 
-bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam);
+bool isMissingParam(JsonDocument doc, std::list<String> requiredParam);
 bool isInOnTime(int onTime, int offTime);
 
 uint16_t getIntTime();
@@ -150,89 +150,144 @@ void initServer()
         request->send(response);
     });
 
-    server.on("/growLightTop", HTTP_PUT, [] (AsyncWebServerRequest *request) {
-        std::list<String> requiredParam = {"opModeGrowLightTop",
-                                           "brightnessGrowLightTop",
-                                           "onTimeGrowLightTop",
-                                           "offTimeGrowLightTop"};
+    server.on("/growLightTop",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeGrowLightTop",
+                                                       "brightnessGrowLightTop",
+                                                       "onTimeGrowLightTop",
+                                                       "offTimeGrowLightTop"};
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
 
-        if(isMissingParam(request, requiredParam)){return;}
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
 
-        String newName = request->getParam("name", true)->value();
+                    if(isMissingParam(doc, requiredParam)){return;}
 
-        state.setOpModeGrowLightTop(request->getParam("opModeGrowLightTop", true)->value().toInt());
-        state.setBrightnessGrowLightTop(request->getParam("brightnessGrowLightTop", true)->value().toInt());
-        state.setOnTimeGrowLightTop(request->getParam("onTimeGrowLightTop", true)->value().toInt());
-        state.setOffTimeGrowLightTop(request->getParam("offTimeGrowLightTop", true)->value().toInt());
+                    state.setOpModeGrowLightTop(doc["opModeGrowLightTop"].as<int>());
+                    state.setBrightnessGrowLightTop(doc["brightnessGrowLightTop"].as<int>());
+                    state.setOnTimeGrowLightTop(doc["onTimeGrowLightTop"].as<int>());
+                    state.setOffTimeGrowLightTop(doc["offTimeGrowLightTop"].as<int>());
 
-        request->send(200, "application/json", "{\"status\":\"growLightTop updated\"}");
-    });
+                    request->send(200, "application/json", "{\"status\":\"growLightTop updated\"}");
+              }
+    );
 
-    server.on("/growLightBottom", HTTP_PUT, [] (AsyncWebServerRequest *request) {
-        std::list<String> requiredParam = {"opModeGrowLightBottom",
-                                           "brightnessGrowLightBottom",
-                                           "onTimeGrowLightBottom",
-                                           "offTimeGrowLightBottom"};
+    server.on("/growLightBottom",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeGrowLightBottom",
+                                                       "brightnessGrowLightBottom",
+                                                       "onTimeGrowLightBottom",
+                                                       "offTimeGrowLightBottom"};
 
-        if(isMissingParam(request, requiredParam)){return;}
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
 
-        String newName = request->getParam("name", true)->value();
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
 
-        state.setOpModeGrowLightBottom(request->getParam("opModeGrowLightBottom", true)->value().toInt());
-        state.setBrightnessGrowLightBottom(request->getParam("brightnessGrowLightBottom", true)->value().toInt());
-        state.setOnTimeGrowLightBottom(request->getParam("onTimeGrowLightBottom", true)->value().toInt());
-        state.setOffTimeGrowLightBottom(request->getParam("offTimeGrowLightBottom", true)->value().toInt());
+                    if(isMissingParam(doc, requiredParam)){return;}
 
-        request->send(200, "application/json", "{\"status\":\"growLightBottom updated\"}");
-    });
+                    state.setOpModeGrowLightBottom(doc["opModeGrowLightBottom"].as<int>());
+                    state.setBrightnessGrowLightBottom(doc["brightnessGrowLightBottom"].as<int>());
+                    state.setOnTimeGrowLightBottom(doc["onTimeGrowLightBottom"].as<int>());
+                    state.setOffTimeGrowLightBottom(doc["offTimeGrowLightBottom"].as<int>());
 
-    server.on("/outletLeft", HTTP_PUT, [] (AsyncWebServerRequest *request) {
-        std::list<String> requiredParam = {"opModeOutletLeft",
-                                           "onOutletLeft",
-                                           "onTimeOutletLeft",
-                                           "offTimeOutletLeft"};
+                    request->send(200, "application/json", "{\"status\":\"growLightBottom updated\"}");
+              }
+    );
 
-        if(isMissingParam(request, requiredParam)){return;}
+    server.on("/outletLeft",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeOutletLeft",
+                                                       "onOutletLeft",
+                                                       "onTimeOutletLeft",
+                                                       "offTimeOutletLeft"};
 
-        String newName = request->getParam("name", true)->value();
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
 
-        state.setOpModeOutletLeft(request->getParam("opModeOutletLeft", true)->value().toInt());
-        state.setOnOutletLeft(request->getParam("onOutletLeft", true)->value().toInt());
-        state.setOnTimeOutletLeft(request->getParam("onTimeOutletLeft", true)->value().toInt());
-        state.setOffTimeOutletLeft(request->getParam("offTimeOutletLeft", true)->value().toInt());
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
 
-        request->send(200, "application/json", "{\"status\":\"outletLeft updated\"}");
-    });
+                    if(isMissingParam(doc, requiredParam)){return;}
 
-    server.on("/outletRight", HTTP_PUT, [] (AsyncWebServerRequest *request) {
-        std::list<String> requiredParam = {"opModeOutletRight",
-                                           "onOutletRight",
-                                           "onTimeOutletRight",
-                                           "offTimeOutletRight"};
+                    state.setOpModeOutletLeft(doc["opModeOutletLeft"].as<int>());
+                    state.setOnOutletLeft(doc["onOutletLeft"].as<int>());
+                    state.setOnTimeOutletLeft(doc["onTimeOutletLeft"].as<int>());
+                    state.setOffTimeOutletLeft(doc["offTimeOutletLeft"].as<int>());
 
-        if(isMissingParam(request, requiredParam)){return;}
+                    request->send(200, "application/json", "{\"status\":\"outletLeft updated\"}");
+              }
+    );
 
-        String newName = request->getParam("name", true)->value();
+    server.on("/outletRight",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeOutletRight",
+                                                       "onOutletRight",
+                                                       "onTimeOutletRight",
+                                                       "offTimeOutletRight"};
 
-        state.setOpModeOutletRight(request->getParam("opModeOutletRight", true)->value().toInt());
-        state.setOnOutletRight(request->getParam("onOutletRight", true)->value().toInt());
-        state.setOnTimeOutletRight(request->getParam("onTimeOutletRight", true)->value().toInt());
-        state.setOffTimeOutletRight(request->getParam("offTimeOutletRight", true)->value().toInt());
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
 
-        request->send(200, "application/json", "{\"status\":\"outletRight updated\"}");
-    });
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
+
+                    if(isMissingParam(doc, requiredParam)){return;}
+
+                    state.setOpModeOutletRight(doc["opModeOutletRight"].as<int>());
+                    state.setOnOutletRight(doc["onOutletRight"].as<int>());
+                    state.setOnTimeOutletRight(doc["onTimeOutletRight"].as<int>());
+                    state.setOffTimeOutletRight(doc["offTimeOutletRight"].as<int>());
+
+                    request->send(200, "application/json", "{\"status\":\"outletRight updated\"}");
+              }
+    );
 
     server.begin();
 }
 
-bool isMissingParam(AsyncWebServerRequest *request, std::list<String> requiredParam)
+bool isMissingParam(JsonDocument doc, std::list<String> requiredParam)
 {
     bool missing = false;
     std::list<String> missingParam = {};
 
     for(auto param : requiredParam)
     {
-        if (!request->hasParam(param, true))
+        if (!doc[param])
         {
             missingParam.push_back(param);
         }
