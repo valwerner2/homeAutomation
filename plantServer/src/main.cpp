@@ -40,7 +40,7 @@ void initServer();
 void updateGrowLights();
 void updateOutlets();
 
-bool isMissingParam(JsonDocument doc, std::list<String> requiredParam);
+bool isMissingParam(AsyncWebServerRequest *request, JsonDocument doc, std::list<String> requiredParam);
 bool isInOnTime(int onTime, int offTime);
 
 uint16_t getIntTime();
@@ -170,7 +170,7 @@ void initServer()
                         return;
                     }
 
-                    if(isMissingParam(doc, requiredParam)){return;}
+                    if(isMissingParam(request, doc, requiredParam)){return;}
 
                     state.setOpModeGrowLightTop(doc["opModeGrowLightTop"].as<int>());
                     state.setBrightnessGrowLightTop(doc["brightnessGrowLightTop"].as<int>());
@@ -202,7 +202,7 @@ void initServer()
                         return;
                     }
 
-                    if(isMissingParam(doc, requiredParam)){return;}
+                    if(isMissingParam(request, doc, requiredParam)){return;}
 
                     state.setOpModeGrowLightBottom(doc["opModeGrowLightBottom"].as<int>());
                     state.setBrightnessGrowLightBottom(doc["brightnessGrowLightBottom"].as<int>());
@@ -234,7 +234,7 @@ void initServer()
                         return;
                     }
 
-                    if(isMissingParam(doc, requiredParam)){return;}
+                    if(isMissingParam(request, doc, requiredParam)){return;}
 
                     state.setOpModeOutletLeft(doc["opModeOutletLeft"].as<int>());
                     state.setOnOutletLeft(doc["onOutletLeft"].as<int>());
@@ -266,7 +266,7 @@ void initServer()
                         return;
                     }
 
-                    if(isMissingParam(doc, requiredParam)){return;}
+                    if(isMissingParam(request, doc, requiredParam)){return;}
 
                     state.setOpModeOutletRight(doc["opModeOutletRight"].as<int>());
                     state.setOnOutletRight(doc["onOutletRight"].as<int>());
@@ -280,7 +280,7 @@ void initServer()
     server.begin();
 }
 
-bool isMissingParam(JsonDocument doc, std::list<String> requiredParam)
+bool isMissingParam(AsyncWebServerRequest *request, JsonDocument doc, std::list<String> requiredParam)
 {
     bool missing = false;
     std::list<String> missingParam = {};
