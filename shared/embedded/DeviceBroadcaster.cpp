@@ -64,16 +64,38 @@ namespace IOT
 
         udp_.begin(udpPort_);
 
-        server.on("/deviceBroadcaster/name", HTTP_PUT, [this] (AsyncWebServerRequest *request) {
-            if (!request->hasParam("name", true)) {
-                request->send(400, "application/json", "{\"error\":\"Missing 'name' parameter\"}");
-                return;
-            }
+        server.on("/deviceBroadcaster/name",
+                  HTTP_PUT,
+                  [](AsyncWebServerRequest *request) {
+                      // This is required even if unused
+                  },
+                  nullptr,
+                  [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+                  {
+                        JsonDocument doc;
+                        DeserializationError error = deserializeJson(doc, data, len);
 
-            String newName = request->getParam("name", true)->value();
-            Serial.println(newName);
-            this->setName(newName);
-            request->send(200, "application/json", "{\"status\":\"Name updated\"}");
+                        if (error) {
+                            request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                            return;
+                        }
+
+                        if (!doc["name"]) {
+                            request->send(400, "application/json", "{\"error\":\"Missing 'name' key in JSON\"}");
+                            return;
+                        }
+
+                        String newName = doc["name"].as<String>();
+                        Serial.println(newName);
+                        this->setName(newName);
+
+                        request->send(200, "application/json", "{\"status\":\"Name updated\"}");
+                  }
+        );
+
+        server.onNotFound([](AsyncWebServerRequest *request) {
+            Serial.println("Not Found: " + request->url());
+            request->send(404, "text/plain", "NOT FOUND");
         });
     }
 
