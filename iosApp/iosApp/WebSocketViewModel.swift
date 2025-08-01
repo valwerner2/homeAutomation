@@ -49,3 +49,85 @@ class WebSocketViewModel: ObservableObject {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
     }
 }
+/*
+ struct DevicesView: View {
+     @StateObject private var viewModel = DevicesViewModel()
+     
+     @State private var editingDeviceID: UUID? = nil
+     @State private var editedPurpose: String = ""
+     
+     let verticalSpacing: CGFloat = 16
+     let verticalPadding: CGFloat = 4
+     let activeColor = Color.blue
+     let inactiveColor = Color.gray
+     
+     var body: some View {
+         NavigationStack {
+             List {
+                 ForEach(viewModel.groupedDevices.keys.sorted(), id: \.self) { name in
+                     if let devices = viewModel.groupedDevices[name] {
+                         Section(
+                             header: Text(name)
+                                 .font(.headline)
+                                 .textCase(nil)
+                         ) {
+                             ForEach(devices) { device in
+                                 HStack {
+                                     VStack(alignment: .leading, spacing: verticalSpacing) {
+                                         
+                                         if editingDeviceID == device.id {
+                                             // Show TextField for editing purpose
+                                             TextField("Edit purpose", text: $editedPurpose)
+                                                 .textFieldStyle(.roundedBorder)
+                                         } else {
+                                             Text("Purpose: \(device.purpose)")
+                                         }
+                                         
+                                         Text("IP: \(device.ip)")
+                                         Text("MAC: \(device.mac)")
+                                     }
+                                     .padding(.vertical, verticalPadding)
+                                     
+                                     Spacer()
+                                     
+                                     VStack(alignment: .center, spacing: verticalSpacing) {
+                                         Image(systemName: device.active ? "wifi" : "wifi.slash")
+                                             .foregroundStyle(device.active ? activeColor : inactiveColor)
+                                         
+                                         Button(action: {
+                                             print("Eye button was pressed!")
+                                         }) {
+                                             Image(systemName: device.active ? "eye" : "eye.slash")
+                                                 .foregroundStyle(device.active ? activeColor : inactiveColor)
+                                         }
+                                         .buttonStyle(.plain)
+                                         
+                                         Button(action: {
+                                             if editingDeviceID == device.id {
+                                                 // Save changes and close editor
+                                                 viewModel.updateDevice(deviceID: device.id, newPurpose: editedPurpose)
+                                                 editingDeviceID = nil
+                                             } else {
+                                                 // Start editing
+                                                 editedPurpose = device.purpose
+                                                 editingDeviceID = device.id
+                                             }
+                                         }) {
+                                             Image(systemName: editingDeviceID == device.id ? "checkmark" : "pencil")
+                                                 .foregroundStyle(device.active ? activeColor : inactiveColor)
+                                         }
+                                         .buttonStyle(.plain)
+                                     }
+                                     .padding(.vertical, verticalPadding)
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+             .navigationTitle("Devices")
+         }
+     }
+ }
+
+ */
