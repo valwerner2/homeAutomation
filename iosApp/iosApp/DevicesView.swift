@@ -7,13 +7,17 @@
 import SwiftUI
 
 struct DevicesView: View {
-    @StateObject private var viewModel = DevicesViewModel()
+    @ObservedObject var viewModel: DevicesViewModel
     
     
     let verticalSpacing: CGFloat = 16
     let verticalPadding: CGFloat = 4
     let activeColor = Color.blue
     let inactiveColor = Color.gray
+    
+    init(viewModel: DevicesViewModel){
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         NavigationStack {
@@ -101,5 +105,5 @@ struct DevicesView: View {
 }
 
 #Preview {
-    DevicesView()
+    DevicesView(viewModel: DevicesViewModel(socketModel: DevicesWebSocketModel()))
 }

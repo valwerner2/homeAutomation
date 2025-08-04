@@ -11,13 +11,10 @@ class DevicesViewModel: ObservableObject {
     
     @Published var devices: [DeviceModel] = []
 
-        private var model: DevicesWebSocketModel
-        private var cancellables = Set<AnyCancellable>()
-
-    init(model: DevicesWebSocketModel = DevicesWebSocketModel()) {
-        self.model = model
-        
-        model.$devices
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(socketModel: DevicesWebSocketModel) {
+        socketModel.$devices
             .receive(on: DispatchQueue.main)
             .assign(to: &$devices)
     }

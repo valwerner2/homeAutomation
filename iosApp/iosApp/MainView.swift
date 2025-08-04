@@ -8,27 +8,34 @@
 import SwiftUI
 
 struct MainView: View {
+    var devicesView: DevicesView
+    var dashboardView: DashboardView
+    
+    init(devicesView: DevicesView, dashboardView: DashboardView) {
+        self.devicesView = devicesView
+        self.dashboardView = dashboardView
+    }
     
     var body: some View {
         TabView {
-            DashboardView()
-                .tabItem{
-                    Label("Dashboard", systemImage: "rectangle.grid.1x2")
+                self.dashboardView
+                    .tabItem{
+                        Label("Dashboard", systemImage: "rectangle.grid.1x2")
+                    }
+            
+                NavigationStack {
+                    List {
+                        NavigationLink("Go to View A", destination: ViewA())
+                        NavigationLink("Go to View B", destination: ViewB())
+                        NavigationLink("Go to View C", destination: ViewC())
+                    }
+                    .navigationTitle("Services")
                 }
-            NavigationStack {
-                List {
-                    NavigationLink("Go to View A", destination: ViewA())
-                    NavigationLink("Go to View B", destination: ViewB())
-                    NavigationLink("Go to View C", destination: ViewC())
-                }
-                .navigationTitle("Services")
-            }
+                    .tabItem {
+                        Label("Services", systemImage: "square.stack.3d.up")
+                    }
                 
-                .tabItem {
-                    Label("Services", systemImage: "square.stack.3d.up")
-                }
-                
-                DevicesView()
+                self.devicesView
                     .tabItem {
                         Label("Devices", systemImage: "sensor")
                     }
@@ -60,5 +67,5 @@ struct ViewC: View {
 
     
 #Preview {
-    MainView()
+    MainView(devicesView: DevicesView(viewModel: DevicesViewModel(socketModel: DevicesWebSocketModel())), dashboardView: DashboardView(viewModel: DashboardViewModel(socketModel: DevicesWebSocketModel())))
 }

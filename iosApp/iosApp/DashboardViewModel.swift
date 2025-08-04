@@ -6,23 +6,23 @@
 //
 import Foundation
 import Combine
+import SwiftUICore
 
 class DashboardViewModel: ObservableObject
 {
     @Published var devices: [DeviceModel] = []
-    
-    private var model: DevicesWebSocketModel
-    private var cancellables = Set<AnyCancellable>()
+    @EnvironmentObject var socketModel: DevicesWebSocketModel
     
     private var timerCancellable: AnyCancellable?
 
-    init(model: DevicesWebSocketModel = DevicesWebSocketModel()) {
-        self.model = model
-
-        model.$devices
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(socketModel: DevicesWebSocketModel) {
+        socketModel.$devices
             .receive(on: DispatchQueue.main)
             .assign(to: &$devices)
     }
+
     
     private func startTimer() {
         timerCancellable = Timer
