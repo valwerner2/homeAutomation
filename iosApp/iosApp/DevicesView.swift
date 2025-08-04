@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct DevicesView: View {
-    @StateObject private var viewModel = DevicesViewModel()
+    @ObservedObject var viewModel: DevicesViewModel
     
     
     let verticalSpacing: CGFloat = 16
@@ -15,86 +15,88 @@ struct DevicesView: View {
     let activeColor = Color.blue
     let inactiveColor = Color.gray
     
+    init(viewModel: DevicesViewModel){
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         NavigationStack {
             List {
-                ForEach(viewModel.groupedDevices.keys.sorted(), id: \.self) { name in
-                    if let devices = viewModel.groupedDevices[name] {
+                ForEach(viewModel.devices) { currentDevice in
                         Section(
                             header:
-                                Text(name)
+                                Text(currentDevice.name)
                                         .font(.headline)
                                         .textCase(nil)
                         ) {
-                            ForEach(devices) { device in
-                                VStack{
-                                    HStack{
-                                        VStack(alignment: .leading, spacing: verticalSpacing) {
-                                            
-                                            Text("Purpose: \(device.purpose)")
-                                            Text("IP: \(device.ip)")
-                                            Text("MAC: \(device.mac)")
+                            VStack{
+                                HStack{
+                                    VStack(alignment: .leading, spacing: verticalSpacing) {
+                                        
+                                        Text("Purpose: \(currentDevice.purpose)")
+                                        Text("IP: \(currentDevice.ip)")
+                                        Text("MAC: \(currentDevice.mac)")
+                                    }
+                                    .padding(.vertical, verticalPadding)
+                                    
+                                    Spacer()
+                                    
+                                    VStack(alignment: .center, spacing: verticalSpacing) {
+                                        Image(systemName: currentDevice.active ? "wifi" : "wifi.slash")
+                                            .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
+                                        
+                                        Button(action: {
+                                            // Your action goes here
+                                            print("Eye button was pressed!")
+                                        }) {
+                                            Image(systemName: currentDevice.active ? "eye" : "eye.slash")
+                                                .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         }
-                                        .padding(.vertical, verticalPadding)
+                                        .buttonStyle(.plain)
                                         
-                                        Spacer()
-                                        
-                                        VStack(alignment: .center, spacing: verticalSpacing) {
-                                            Image(systemName: device.active ? "wifi" : "wifi.slash")
-                                                .foregroundStyle(device.active ? activeColor : inactiveColor)
-                                            
-                                            Button(action: {
+                                        Button(action: {
+                                            if(currentDevice.active)
+                                            {
                                                 // Your action goes here
-                                                print("Eye button was pressed!")
-                                            }) {
-                                                Image(systemName: device.active ? "eye" : "eye.slash")
-                                                    .foregroundStyle(device.active ? activeColor : inactiveColor)
+                                                print("Pencil button was pressed!")
+                                                if(viewModel.editingDeviceID == currentDevice.id) {viewModel.editingDeviceID = nil}
+                                                else {viewModel.editingDeviceID = currentDevice.id}
+                                                viewModel.editedName = currentDevice.name
                                             }
-                                            .buttonStyle(.plain)
-                                            
-                                            Button(action: {
-                                                if(device.active)
-                                                {
-                                                    // Your action goes here
-                                                    print("Pencil button was pressed!")
-                                                    if(viewModel.editingDeviceID == device.id) {viewModel.editingDeviceID = nil}
-                                                    else {viewModel.editingDeviceID = device.id}
-                                                    viewModel.editedName = device.name
-                                                }
-                                            }) {
-                                                Image(systemName: "pencil")
-                                                    .foregroundStyle(device.active ? activeColor : inactiveColor)
-                                            }
-                                            .buttonStyle(.plain)
-                                            
+                                        }) {
+                                            Image(systemName: "pencil")
+                                                .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         }
-                                        .padding(.vertical, verticalPadding)
+                                        .buttonStyle(.plain)
                                         
                                     }
-                                    if viewModel.editingDeviceID == device.id{
-                                        // Show TextField for editing purpose
-                                        HStack{
-                                            TextField("Edit purpose", text: $viewModel.editedName)
-                                                .textFieldStyle(.roundedBorder)
-                                            
-                                            Button(action: {
-                                                if(device.active)
-                                                {
-                                                    // Your action goes here
-                                                    print("SEND button was pressed!")
-                                                    viewModel.changeName()
-                                                }
-                                            }) {
-                                                Image(systemName: "tray.and.arrow.down.fill")
-                                                    .foregroundStyle(device.active ? activeColor : inactiveColor)
+                                    .padding(.vertical, verticalPadding)
+                                    
+                                }
+                                if viewModel.editingDeviceID == currentDevice.id{
+                                    // Show TextField for editing purpose
+                                    HStack{
+                                        TextField("Edit purpose", text: $viewModel.editedName)
+                                            .textFieldStyle(.roundedBorder)
+                                        
+                                        Button(action: {
+                                            if(currentDevice.active)
+                                            {
+                                                // Your action goes here
+                                                print("SEND button was pressed!")
+                                                viewModel.changeName()
                                             }
-                                            .buttonStyle(.plain)
+                                        }) {
+                                            Image(systemName: "tray.and.arrow.down.fill")
+                                                .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         }
+                                        .buttonStyle(.plain)
                                     }
                                 }
                             }
+                            
                         }
-                    }
+                    
                 }
             }
             .navigationTitle("Devices")
@@ -103,5 +105,5 @@ struct DevicesView: View {
 }
 
 #Preview {
-    DevicesView()
+    DevicesView(viewModel: DevicesViewModel(socketModel: DevicesWebSocketModel()))
 }

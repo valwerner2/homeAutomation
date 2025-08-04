@@ -7,7 +7,12 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject private var viewModel = DevicesViewModel()
+    
+    @ObservedObject var viewModel: DashboardViewModel
+    
+    init(viewModel: DashboardViewModel){
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         Text("Hello Dashboard")
