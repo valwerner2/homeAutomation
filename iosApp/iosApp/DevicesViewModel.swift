@@ -9,18 +9,18 @@ import Combine
 
 class DevicesViewModel: ObservableObject {
     
-    @Published var groupedDevices: [String: [DeviceModel]] = [:]
+    @Published var devices: [DeviceModel] = []
 
         private var model: DevicesWebSocketModel
         private var cancellables = Set<AnyCancellable>()
 
-        init(model: DevicesWebSocketModel = DevicesWebSocketModel()) {
-            self.model = model
-
-            model.$groupedDevices
-                .receive(on: DispatchQueue.main)
-                .assign(to: &$groupedDevices)
-        }
+    init(model: DevicesWebSocketModel = DevicesWebSocketModel()) {
+        self.model = model
+        
+        model.$devices
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$devices)
+    }
 
     @Published var editingDeviceID: UUID? = nil
     @Published var editedName: String = ""
@@ -28,8 +28,7 @@ class DevicesViewModel: ObservableObject {
     @Published var errorChangeName: String?
     
     private func findDevice(by id: UUID) -> DeviceModel? {
-        return groupedDevices
-            .flatMap { $0.value } // Flattens [[DeviceInfo]] into [DeviceInfo]
+        return devices
             .first { $0.id == id } // Finds the first match
     }
     
