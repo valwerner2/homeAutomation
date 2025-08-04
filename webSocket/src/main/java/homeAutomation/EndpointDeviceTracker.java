@@ -80,13 +80,15 @@ public class EndpointDeviceTracker {
         boolean changed = false;
         for (Device currentDevice : deviceStorage.getDevices().values())
         {
-            long secondsOffline = LocalTime.now().toSecondOfDay() - currentDevice.timeStamp;
+            int timeNow = LocalTime.now().toSecondOfDay();
 
-            if(secondsOffline <= maxOfflineSeconds != currentDevice.active)
+            boolean isOnline = (currentDevice.timeStamp <= timeNow) && (timeNow - currentDevice.timeStamp <= maxOfflineSeconds);
+
+            if(isOnline != currentDevice.active)
             {
                 changed = true;
             }
-            currentDevice.active = secondsOffline <= maxOfflineSeconds;
+            currentDevice.active = isOnline;
             System.out.println(currentDevice);
         }
         System.out.println("----------------------------\n");
