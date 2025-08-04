@@ -11,7 +11,6 @@ import SwiftUICore
 class DashboardViewModel: ObservableObject
 {
     @Published var devices: [DeviceModel] = []
-    @EnvironmentObject var socketModel: DevicesWebSocketModel
     
     private var timerCancellable: AnyCancellable?
 

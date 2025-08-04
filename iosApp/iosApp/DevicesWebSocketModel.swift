@@ -10,7 +10,9 @@ import NotificationCenter
 class DevicesWebSocketModel: ObservableObject
 {
     @Published var devices: [DeviceModel] = []
+    @Published var isConnected: Bool = false
     
+    private var reconnectDelay: TimeInterval = 5
     private var webSocketTask: URLSessionWebSocketTask?
 
     init() {
@@ -43,6 +45,7 @@ class DevicesWebSocketModel: ObservableObject
         print("App will resign active → closing WebSocket")
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         webSocketTask = nil
+        isConnected = false
     }
     
     func connectWebSocket() {
@@ -50,6 +53,7 @@ class DevicesWebSocketModel: ObservableObject
         let session = URLSession(configuration: .default)
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
+        isConnected = true
         listen()
     }
 
@@ -70,9 +74,16 @@ class DevicesWebSocketModel: ObservableObject
                 }
             case .failure(let error):
                 print("WebSocket error: \(error)")
+                DispatchQueue.main.async{
+                    self.isConnected = false
+                }
+                DispatchQueue.global().asyncAfter(deadline: .now() + self.reconnectDelay) {
+                                        print("Attempting to reconnect...")
+                                        self.connectWebSocket()
+                                    }
             }
             
-            if(webSocketTask != nil)
+            if(webSocketTask != nil && self.isConnected)
             {
                 self.listen() // Keep listening
             }
@@ -97,5 +108,6 @@ class DevicesWebSocketModel: ObservableObject
     deinit {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         NotificationCenter.default.removeObserver(self)
+        isConnected = false
     }
 }
