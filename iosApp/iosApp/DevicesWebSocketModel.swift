@@ -58,7 +58,7 @@ class DevicesWebSocketModel: ObservableObject
         }
         listen()
     }
-
+    
     private func listen() {
         webSocketTask?.receive { [weak self] result in
             guard let self = self else { return }
@@ -121,7 +121,13 @@ class DevicesWebSocketModel: ObservableObject
             print("Decoding error: \(error)")
         }
     }
-
+    
+    func updateShowInDashboard(for id: UUID, to newValue: Bool) {
+        if let index = devices.firstIndex(where: { $0.id == id }) {
+            devices[index].showInDashboard = newValue
+        }
+    }
+    
     deinit {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         NotificationCenter.default.removeObserver(self)

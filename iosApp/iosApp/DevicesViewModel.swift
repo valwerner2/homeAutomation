@@ -12,8 +12,12 @@ class DevicesViewModel: ObservableObject {
     @Published var devices: [DeviceModel] = []
 
     private var cancellables = Set<AnyCancellable>()
+    private var socketModel: DevicesWebSocketModel
     
     init(socketModel: DevicesWebSocketModel) {
+        
+        self.socketModel = socketModel
+        
         socketModel.$devices
             .receive(on: DispatchQueue.main)
             .assign(to: &$devices)
@@ -37,6 +41,7 @@ class DevicesViewModel: ObservableObject {
         }
 
         devices[index].showInDashboard.toggle()
+        socketModel.updateShowInDashboard(for: id, to: devices[index].showInDashboard)
         print("Toggled visibility for device: \(devices[index].name)")
     }
     

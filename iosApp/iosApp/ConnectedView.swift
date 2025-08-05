@@ -21,8 +21,8 @@ struct ConnectedView: View{
                     Image(systemName: "wifi")
                         .symbolEffect(
                             .variableColor.iterative,
-                            options: viewModel.isConnected ? .repeat(1) : .repeat(.continuous),
-                            value: !viewModel.isConnected
+                            options: .repeat(.continuous),
+                            isActive: !viewModel.isConnected
                         )
                     Text(viewModel.isConnected ? "Connected" : "Reconnecting")
                         .transition(.opacity)
