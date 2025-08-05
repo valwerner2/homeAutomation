@@ -53,10 +53,12 @@ class DevicesWebSocketModel: ObservableObject
         let session = URLSession(configuration: .default)
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
-        isConnected = true
+        DispatchQueue.main.async {
+            self.isConnected = true
+        }
         listen()
     }
-
+    
     private func listen() {
         webSocketTask?.receive { [weak self] result in
             guard let self = self else { return }
@@ -94,17 +96,38 @@ class DevicesWebSocketModel: ObservableObject
         print("processing message")
         
         do {
-            let devices = try JSONDecoder().decode([DeviceModel].self, from: data)
+               let incomingDevices = try JSONDecoder().decode([DeviceModel].self, from: data)
 
-            
-            Task { @MainActor in
-                self.devices = devices
-            }
-        } catch {
+               Task { @MainActor in
+                   let updatedDevices = incomingDevices.map { newDevice -> DeviceModel in
+                       if let oldDevice = self.devices.first(where: { $0.mac == newDevice.mac }) {
+                           // Preserve showInDashboard
+                           return DeviceModel(
+                               name: newDevice.name,
+                               ip: newDevice.ip,
+                               mac: newDevice.mac,
+                               purpose: newDevice.purpose,
+                               active: newDevice.active,
+                               showInDashboard: oldDevice.showInDashboard
+                           )
+                       } else {
+                           return newDevice // fallback: use default showInDashboard = false
+                       }
+                   }
+
+                   self.devices = updatedDevices
+               }
+           } catch {
             print("Decoding error: \(error)")
         }
     }
-
+    
+    func updateShowInDashboard(for id: UUID, to newValue: Bool) {
+        if let index = devices.firstIndex(where: { $0.id == id }) {
+            devices[index].showInDashboard = newValue
+        }
+    }
+    
     deinit {
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         NotificationCenter.default.removeObserver(self)

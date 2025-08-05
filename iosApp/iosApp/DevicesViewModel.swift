@@ -12,8 +12,12 @@ class DevicesViewModel: ObservableObject {
     @Published var devices: [DeviceModel] = []
 
     private var cancellables = Set<AnyCancellable>()
+    private var socketModel: DevicesWebSocketModel
     
     init(socketModel: DevicesWebSocketModel) {
+        
+        self.socketModel = socketModel
+        
         socketModel.$devices
             .receive(on: DispatchQueue.main)
             .assign(to: &$devices)
@@ -27,6 +31,18 @@ class DevicesViewModel: ObservableObject {
     private func findDevice(by id: UUID) -> DeviceModel? {
         return devices
             .first { $0.id == id } // Finds the first match
+    }
+    
+    func toggleVisibility(idToToggle: UUID?) {
+        guard let id = idToToggle,
+              let index = devices.firstIndex(where: { $0.id == id }) else {
+            print("Device not found.")
+            return
+        }
+
+        devices[index].showInDashboard.toggle()
+        socketModel.updateShowInDashboard(for: id, to: devices[index].showInDashboard)
+        print("Toggled visibility for device: \(devices[index].name)")
     }
     
     func changeName() {

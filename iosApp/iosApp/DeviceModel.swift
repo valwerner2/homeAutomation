@@ -14,6 +14,7 @@ struct DeviceModel: Identifiable, Decodable {
     let mac: String
     let purpose: String
     let active: Bool
+    var showInDashboard: Bool = false
 
     enum CodingKeys: String, CodingKey {
         case name, ip, mac, purpose, active

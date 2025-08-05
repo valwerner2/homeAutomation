@@ -18,8 +18,14 @@ struct ConnectedView: View{
     var body: some View {
             if viewModel.showConnectionState {
                 HStack(spacing: 8) {
-                    Image(systemName: viewModel.isConnected ? "wifi" : "wifi.slash")
+                    Image(systemName: "wifi")
+                        .symbolEffect(
+                            .variableColor.iterative,
+                            options: .repeat(.continuous),
+                            isActive: !viewModel.isConnected
+                        )
                     Text(viewModel.isConnected ? "Connected" : "Reconnecting")
+                        .transition(.opacity)
                 }
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .center)

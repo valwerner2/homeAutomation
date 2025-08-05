@@ -15,6 +15,9 @@ struct DevicesView: View {
     let activeColor = Color.blue
     let inactiveColor = Color.gray
     
+    let heavyImpactGenerator = UIImpactFeedbackGenerator(style: .heavy)
+    let mediumImpactGenerator = UIImpactFeedbackGenerator(style: .medium)
+    
     init(viewModel: DevicesViewModel){
         self.viewModel = viewModel
     }
@@ -43,14 +46,21 @@ struct DevicesView: View {
                                     
                                     VStack(alignment: .center, spacing: verticalSpacing) {
                                         Image(systemName: currentDevice.active ? "wifi" : "wifi.slash")
+                                            .frame(width: 20, height: 20)
+                                            .contentTransition(.symbolEffect(.replace))
                                             .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         
                                         Button(action: {
-                                            // Your action goes here
                                             print("Eye button was pressed!")
+                                            heavyImpactGenerator.impactOccurred()
+                                            withAnimation(.easeInOut) {
+                                                viewModel.toggleVisibility(idToToggle: currentDevice.id)
+                                            }
                                         }) {
-                                            Image(systemName: currentDevice.active ? "eye" : "eye.slash")
-                                                .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
+                                            Image(systemName: currentDevice.showInDashboard ? "eye" : "eye.slash")
+                                                .frame(width: 20, height: 20)
+                                                .contentTransition(.symbolEffect(.replace))
+                                                .foregroundStyle(currentDevice.showInDashboard ? activeColor : inactiveColor)
                                         }
                                         .buttonStyle(.plain)
                                         
@@ -59,12 +69,15 @@ struct DevicesView: View {
                                             {
                                                 // Your action goes here
                                                 print("Pencil button was pressed!")
+                                                if(currentDevice.active){mediumImpactGenerator.impactOccurred()}
                                                 if(viewModel.editingDeviceID == currentDevice.id) {viewModel.editingDeviceID = nil}
                                                 else {viewModel.editingDeviceID = currentDevice.id}
                                                 viewModel.editedName = currentDevice.name
                                             }
                                         }) {
-                                            Image(systemName: "pencil")
+                                            Image(systemName: viewModel.editingDeviceID == currentDevice.id ? "xmark.circle" : currentDevice.active ? "pencil" : "pencil.slash")
+                                                .frame(width: 20, height: 20)
+                                                .contentTransition(.symbolEffect(.replace))
                                                 .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         }
                                         .buttonStyle(.plain)
@@ -85,6 +98,7 @@ struct DevicesView: View {
                                                 // Your action goes here
                                                 print("SEND button was pressed!")
                                                 viewModel.changeName()
+                                                heavyImpactGenerator.impactOccurred()
                                             }
                                         }) {
                                             Image(systemName: "tray.and.arrow.down.fill")
