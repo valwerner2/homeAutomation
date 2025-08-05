@@ -53,7 +53,9 @@ class DevicesWebSocketModel: ObservableObject
         let session = URLSession(configuration: .default)
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
-        isConnected = true
+        DispatchQueue.main.async {
+            self.isConnected = true
+        }
         listen()
     }
 
