@@ -96,13 +96,28 @@ class DevicesWebSocketModel: ObservableObject
         print("processing message")
         
         do {
-            let devices = try JSONDecoder().decode([DeviceModel].self, from: data)
+               let incomingDevices = try JSONDecoder().decode([DeviceModel].self, from: data)
 
-            
-            Task { @MainActor in
-                self.devices = devices
-            }
-        } catch {
+               Task { @MainActor in
+                   let updatedDevices = incomingDevices.map { newDevice -> DeviceModel in
+                       if let oldDevice = self.devices.first(where: { $0.mac == newDevice.mac }) {
+                           // Preserve showInDashboard
+                           return DeviceModel(
+                               name: newDevice.name,
+                               ip: newDevice.ip,
+                               mac: newDevice.mac,
+                               purpose: newDevice.purpose,
+                               active: newDevice.active,
+                               showInDashboard: oldDevice.showInDashboard
+                           )
+                       } else {
+                           return newDevice // fallback: use default showInDashboard = false
+                       }
+                   }
+
+                   self.devices = updatedDevices
+               }
+           } catch {
             print("Decoding error: \(error)")
         }
     }

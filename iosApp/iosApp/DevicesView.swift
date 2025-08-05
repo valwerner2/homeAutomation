@@ -43,14 +43,20 @@ struct DevicesView: View {
                                     
                                     VStack(alignment: .center, spacing: verticalSpacing) {
                                         Image(systemName: currentDevice.active ? "wifi" : "wifi.slash")
+                                            .frame(width: 20, height: 20)
+                                            .contentTransition(.symbolEffect(.replace))
                                             .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         
                                         Button(action: {
-                                            // Your action goes here
                                             print("Eye button was pressed!")
+                                            withAnimation(.easeInOut) {
+                                                viewModel.toggleVisibility(idToToggle: currentDevice.id)
+                                            }
                                         }) {
-                                            Image(systemName: currentDevice.active ? "eye" : "eye.slash")
-                                                .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
+                                            Image(systemName: currentDevice.showInDashboard ? "eye" : "eye.slash")
+                                                .frame(width: 20, height: 20)
+                                                .contentTransition(.symbolEffect(.replace))
+                                                .foregroundStyle(currentDevice.showInDashboard ? activeColor : inactiveColor)
                                         }
                                         .buttonStyle(.plain)
                                         
@@ -64,7 +70,9 @@ struct DevicesView: View {
                                                 viewModel.editedName = currentDevice.name
                                             }
                                         }) {
-                                            Image(systemName: "pencil")
+                                            Image(systemName: currentDevice.active ? "pencil" : "pencil.slash")
+                                                .frame(width: 20, height: 20)
+                                                .contentTransition(.symbolEffect(.replace))
                                                 .foregroundStyle(currentDevice.active ? activeColor : inactiveColor)
                                         }
                                         .buttonStyle(.plain)

@@ -29,6 +29,17 @@ class DevicesViewModel: ObservableObject {
             .first { $0.id == id } // Finds the first match
     }
     
+    func toggleVisibility(idToToggle: UUID?) {
+        guard let id = idToToggle,
+              let index = devices.firstIndex(where: { $0.id == id }) else {
+            print("Device not found.")
+            return
+        }
+
+        devices[index].showInDashboard.toggle()
+        print("Toggled visibility for device: \(devices[index].name)")
+    }
+    
     func changeName() {
         var ip: String = ""
             if let id = editingDeviceID, let device = findDevice(by: id) {
