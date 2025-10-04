@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		721654EA2E2EB834004ACA78 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		72AEFB1C2E91581000ACF1D8 /* openFarmer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = openFarmer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		721654EC2E2EB834004ACA78 /* iosApp */ = {
+		72AEFB1E2E91581000ACF1D8 /* openFarmer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = iosApp;
+			path = openFarmer;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		721654E72E2EB834004ACA78 /* Frameworks */ = {
+		72AEFB192E91581000ACF1D8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		721654E12E2EB834004ACA78 = {
+		72AEFB132E91581000ACF1D8 = {
 			isa = PBXGroup;
 			children = (
-				721654EC2E2EB834004ACA78 /* iosApp */,
-				721654EB2E2EB834004ACA78 /* Products */,
+				72AEFB1E2E91581000ACF1D8 /* openFarmer */,
+				72AEFB1D2E91581000ACF1D8 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		721654EB2E2EB834004ACA78 /* Products */ = {
+		72AEFB1D2E91581000ACF1D8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				721654EA2E2EB834004ACA78 /* iosApp.app */,
+				72AEFB1C2E91581000ACF1D8 /* openFarmer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		721654E92E2EB834004ACA78 /* iosApp */ = {
+		72AEFB1B2E91581000ACF1D8 /* openFarmer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 721654F52E2EB836004ACA78 /* Build configuration list for PBXNativeTarget "iosApp" */;
+			buildConfigurationList = 72AEFB292E91581100ACF1D8 /* Build configuration list for PBXNativeTarget "openFarmer" */;
 			buildPhases = (
-				721654E62E2EB834004ACA78 /* Sources */,
-				721654E72E2EB834004ACA78 /* Frameworks */,
-				721654E82E2EB834004ACA78 /* Resources */,
+				72AEFB182E91581000ACF1D8 /* Sources */,
+				72AEFB192E91581000ACF1D8 /* Frameworks */,
+				72AEFB1A2E91581000ACF1D8 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				721654EC2E2EB834004ACA78 /* iosApp */,
+				72AEFB1E2E91581000ACF1D8 /* openFarmer */,
 			);
-			name = iosApp;
+			name = openFarmer;
 			packageProductDependencies = (
 			);
-			productName = iosApp;
-			productReference = 721654EA2E2EB834004ACA78 /* iosApp.app */;
+			productName = openFarmer;
+			productReference = 72AEFB1C2E91581000ACF1D8 /* openFarmer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		721654E22E2EB834004ACA78 /* Project object */ = {
+		72AEFB142E91581000ACF1D8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					721654E92E2EB834004ACA78 = {
-						CreatedOnToolsVersion = 16.4;
+					72AEFB1B2E91581000ACF1D8 = {
+						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
 			};
-			buildConfigurationList = 721654E52E2EB834004ACA78 /* Build configuration list for PBXProject "iosApp" */;
+			buildConfigurationList = 72AEFB172E91581000ACF1D8 /* Build configuration list for PBXProject "openFarmer" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 721654E12E2EB834004ACA78;
+			mainGroup = 72AEFB132E91581000ACF1D8;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 721654EB2E2EB834004ACA78 /* Products */;
+			productRefGroup = 72AEFB1D2E91581000ACF1D8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				721654E92E2EB834004ACA78 /* iosApp */,
+				72AEFB1B2E91581000ACF1D8 /* openFarmer */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		721654E82E2EB834004ACA78 /* Resources */ = {
+		72AEFB1A2E91581000ACF1D8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		721654E62E2EB834004ACA78 /* Sources */ = {
+		72AEFB182E91581000ACF1D8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		721654F32E2EB836004ACA78 /* Debug */ = {
+		72AEFB272E91581100ACF1D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -160,7 +160,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = XPD9ZA6WN4;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -178,7 +177,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -189,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		721654F42E2EB836004ACA78 /* Release */ = {
+		72AEFB282E91581100ACF1D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -224,7 +223,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = XPD9ZA6WN4;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -236,7 +234,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -246,7 +244,7 @@
 			};
 			name = Release;
 		};
-		721654F62E2EB836004ACA78 /* Debug */ = {
+		72AEFB2A2E91581100ACF1D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -256,8 +254,6 @@
 				DEVELOPMENT_TEAM = XPD9ZA6WN4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = homeAutomation;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -268,15 +264,19 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = wurstBude.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = wurstbude.openFarmer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		721654F72E2EB836004ACA78 /* Release */ = {
+		72AEFB2B2E91581100ACF1D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -286,8 +286,6 @@
 				DEVELOPMENT_TEAM = XPD9ZA6WN4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = homeAutomation;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -298,9 +296,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = wurstBude.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = wurstbude.openFarmer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -309,25 +311,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		721654E52E2EB834004ACA78 /* Build configuration list for PBXProject "iosApp" */ = {
+		72AEFB172E91581000ACF1D8 /* Build configuration list for PBXProject "openFarmer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				721654F32E2EB836004ACA78 /* Debug */,
-				721654F42E2EB836004ACA78 /* Release */,
+				72AEFB272E91581100ACF1D8 /* Debug */,
+				72AEFB282E91581100ACF1D8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		721654F52E2EB836004ACA78 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
+		72AEFB292E91581100ACF1D8 /* Build configuration list for PBXNativeTarget "openFarmer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				721654F62E2EB836004ACA78 /* Debug */,
-				721654F72E2EB836004ACA78 /* Release */,
+				72AEFB2A2E91581100ACF1D8 /* Debug */,
+				72AEFB2B2E91581100ACF1D8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 721654E22E2EB834004ACA78 /* Project object */;
+	rootObject = 72AEFB142E91581000ACF1D8 /* Project object */;
 }
