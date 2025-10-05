@@ -1,12 +1,15 @@
 #include "wifiPassword.h"
 #include "GrowLight.h"
-#include "HttpServer.h"
 #include "DeviceBroadcaster.h"
+#include "State.h"
+#include "wifiReconnect.h"
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #define MYTZ "CET-1CEST-2,M3.5.0,M10.5.0/3"
 
@@ -22,14 +25,23 @@ struct tm tInfo;
 
 PlantServer::GrowLight growLightTop(6, 1);
 PlantServer::GrowLight growLightBottom(7, 2);
-PlantServer::Output PowerBarRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
-PlantServer::Output PowerBarLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::Output outletRight(3, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::Output outletLeft(4, PlantServer::outputModes::OUTPUT_DIGITAL, HIGH);
+PlantServer::State state;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+AsyncWebServer server(80);
 
 void initScreen(void);
 void initWifi();
 void initTime();
+void initServer();
+void updateGrowLights();
+void updateOutlets();
+
+bool isMissingParam(AsyncWebServerRequest *request, JsonDocument doc, std::list<String> requiredParam);
+bool isInOnTime(int onTime, int offTime);
 
 uint16_t getIntTime();
 void updateTime(const uint32_t timeout);
@@ -52,7 +64,7 @@ void printTime()
     display.display();
 }
 
-PlantServer::HttpServer server;
+
 IOT::DeviceBroadcaster broadcaster("plantServer");
 
 void setup()
@@ -62,18 +74,239 @@ void setup()
     initScreen();
     initWifi();
     initTime();
-    broadcaster.setup();
+    broadcaster.setup(server);
+    state.readState();
 
-    server.start();
+    initServer();
 }
 
 void loop()
 {
+    reconnectWifi(5000);
     if(secondPassed())
     {
         printTime();
     }
     broadcaster.sendBroadcast(5000);
+    updateGrowLights();
+    updateOutlets();
+}
+
+bool isInOnTime(int onTime, int offTime)
+{
+    int current = getIntTime();
+
+    if(onTime < offTime)
+    {
+        return onTime <= current  && current <= offTime;
+    }
+    if(onTime > offTime)
+    {
+      return  (onTime <= current  && current <= 2359) || (0000 <= current  && current <= offTime);
+    }
+    return false;
+}
+
+void updateGrowLights()
+{
+    //growLightTop
+}
+void updateOutlets()
+{
+    //left
+    bool outletLeftOn = false;
+    switch(state.getOpModeOutletLeft())
+    {
+        case state.opModeTimeBased:
+            outletLeftOn = isInOnTime(state.getOnTimeOutletLeft(), state.getOffTimeOutletLeft());
+            break;
+        case state.opModeSlave:
+
+            break;
+        default:
+            if(WiFi.status() == WL_CONNECTED)
+            {
+                outletLeftOn = state.getOnOutletLeft();
+            }
+            else
+            {
+                outletLeftOn = state.getOpModeOutletLeft() == state.opModeServerSlaveOn;
+            }
+            break;
+    }
+    if(outletLeftOn){ outletLeft.setValue(HIGH); }else{ outletLeft.setValue(LOW); }
+
+}
+
+void initServer()
+{
+    server.on("/", HTTP_GET, [] (AsyncWebServerRequest *request) {
+
+        AsyncResponseStream *response = request->beginResponseStream("application/json");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+
+        response->print(state.toJsonString());
+
+        request->send(response);
+    });
+
+    server.on("/growLightTop",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeGrowLightTop",
+                                                       "brightnessGrowLightTop",
+                                                       "onTimeGrowLightTop",
+                                                       "offTimeGrowLightTop"};
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
+
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
+
+                    if(isMissingParam(request, doc, requiredParam)){return;}
+
+                    state.setOpModeGrowLightTop(doc["opModeGrowLightTop"].as<int>());
+                    state.setBrightnessGrowLightTop(doc["brightnessGrowLightTop"].as<int>());
+                    state.setOnTimeGrowLightTop(doc["onTimeGrowLightTop"].as<int>());
+                    state.setOffTimeGrowLightTop(doc["offTimeGrowLightTop"].as<int>());
+
+                    request->send(200, "application/json", "{\"status\":\"growLightTop updated\"}");
+              }
+    );
+
+    server.on("/growLightBottom",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeGrowLightBottom",
+                                                       "brightnessGrowLightBottom",
+                                                       "onTimeGrowLightBottom",
+                                                       "offTimeGrowLightBottom"};
+
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
+
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
+
+                    if(isMissingParam(request, doc, requiredParam)){return;}
+
+                    state.setOpModeGrowLightBottom(doc["opModeGrowLightBottom"].as<int>());
+                    state.setBrightnessGrowLightBottom(doc["brightnessGrowLightBottom"].as<int>());
+                    state.setOnTimeGrowLightBottom(doc["onTimeGrowLightBottom"].as<int>());
+                    state.setOffTimeGrowLightBottom(doc["offTimeGrowLightBottom"].as<int>());
+
+                    request->send(200, "application/json", "{\"status\":\"growLightBottom updated\"}");
+              }
+    );
+
+    server.on("/outletLeft",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeOutletLeft",
+                                                       "onOutletLeft",
+                                                       "onTimeOutletLeft",
+                                                       "offTimeOutletLeft"};
+
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
+
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
+
+                    if(isMissingParam(request, doc, requiredParam)){return;}
+
+                    state.setOpModeOutletLeft(doc["opModeOutletLeft"].as<int>());
+                    state.setOnOutletLeft(doc["onOutletLeft"].as<int>());
+                    state.setOnTimeOutletLeft(doc["onTimeOutletLeft"].as<int>());
+                    state.setOffTimeOutletLeft(doc["offTimeOutletLeft"].as<int>());
+
+                    request->send(200, "application/json", "{\"status\":\"outletLeft updated\"}");
+              }
+    );
+
+    server.on("/outletRight",
+              HTTP_PUT,
+              [](AsyncWebServerRequest *request) {
+                  // This is required even if unused
+              },
+              nullptr,
+              [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+              {
+                    std::list<String> requiredParam = {"opModeOutletRight",
+                                                       "onOutletRight",
+                                                       "onTimeOutletRight",
+                                                       "offTimeOutletRight"};
+
+                    JsonDocument doc;
+                    DeserializationError error = deserializeJson(doc, data, len);
+
+                    if (error) {
+                        request->send(400, "application/json", "{\"error\":\"Invalid JSON\"}");
+                        return;
+                    }
+
+                    if(isMissingParam(request, doc, requiredParam)){return;}
+
+                    state.setOpModeOutletRight(doc["opModeOutletRight"].as<int>());
+                    state.setOnOutletRight(doc["onOutletRight"].as<int>());
+                    state.setOnTimeOutletRight(doc["onTimeOutletRight"].as<int>());
+                    state.setOffTimeOutletRight(doc["offTimeOutletRight"].as<int>());
+
+                    request->send(200, "application/json", "{\"status\":\"outletRight updated\"}");
+              }
+    );
+
+    server.begin();
+}
+
+bool isMissingParam(AsyncWebServerRequest *request, JsonDocument doc, std::list<String> requiredParam)
+{
+    bool missing = false;
+    std::list<String> missingParam = {};
+
+    for(auto param : requiredParam)
+    {
+        if (!doc[param])
+        {
+            missingParam.push_back(param);
+        }
+    }
+
+    missing = !missingParam.empty();
+    if(missing)
+    {
+
+        String stringMissingParam = "(";
+        for(auto param : missingParam)
+        {
+            stringMissingParam += param + ", ";
+        }
+        stringMissingParam += ")";
+        request->send(400, "application/json", "{\"error\":\"Missing parameters " +stringMissingParam+"\"}");
+    }
+
+    return missing;
 }
 
 uint16_t getIntTime()
